@@ -1,4 +1,5 @@
 import java.awt.FlowLayout;
+import javax.imageio.ImageTranscoder;
 import javax.swing.BoxLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent; 
@@ -13,9 +14,13 @@ import javax.swing.JScrollPane;
 import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.awt.Color;
+import java.util.List;
+import java.util.Scanner;
 
 public class window extends JPanel{
 
@@ -30,14 +35,14 @@ public class window extends JPanel{
 	private JLabel label6;
 	private JLabel label7;
 
-	String bill_no = "1234";
+	String bill_no;// = "1234";
 	//retrive from file
 
 	private JComboBox<String> snipper;
-	String[] ItemList = {"Item1","Item2","Item3","Sev"};
+	String[] ItemList;// = {"Item1","Item2","Item3","Sev"};
 
 	private JComboBox<String> snipper0;
-	String[] CustmerList = {"JGK","SJK","HJK","NJK"};
+	String[] CustmerList;// = {"JGK","SJK","HJK","NJK"};
 
 	private JTextField textField1;
 	private JTextField textField2;
@@ -61,8 +66,56 @@ public class window extends JPanel{
 	//{{"A","B","C","D"}};
 	String[] heading = {"Item","Quantity","Price","SubTotal"};
 
+	void getItem() throws Exception{
+		BufferedReader in = new BufferedReader(new FileReader("/home/nilesh/IdeaProjects/BillingStable1.1/Files/items.txt"));
+		ArrayList<String> list = new ArrayList<>();
+		String t=in.readLine();
+		while(t != null){
+			list.add(t);
+			t = in.readLine();
+			//System.out.println("2");
+		}
+		ItemList = list.toArray(new String[list.size()]);
+		in.close();
+	}
+	void getCustomer()throws Exception {
+		BufferedReader in = new BufferedReader(new FileReader("/home/nilesh/IdeaProjects/BillingStable1.1/Files/customers.txt"));
+		String t = in.readLine();
+		ArrayList<String> list = new ArrayList<>();
+		while (t != null){
+			list.add(t);
+			t = in.readLine();
+			//System.out.println("1");
+		}
+		CustmerList = list.toArray(new String[list.size()]);
+		in.close();
+	}
+
+	void get_bill_no() throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader("/home/nilesh/IdeaProjects/BillingStable1.1/Files/bill.txt"));
+		bill_no = br.readLine();
+		br.close();
+	}
+
+	void set_bill_no() throws Exception{
+		bill_no = "" + (Integer.parseInt(bill_no)+1);
+
+		FileOutputStream fos = new FileOutputStream("/home/nilesh/IdeaProjects/BillingStable1.1/Files/bill.txt");
+		fos.write(bill_no.getBytes());
+
+		fos.close();
+	}
+
 	public window(){
 		db = new DB();
+		try{
+			get_bill_no();
+			getCustomer();
+			getItem();
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
 		//super("Rasmalai Billing");
 		//setLayout(new FlowLayout());
 		//setResizable(false);
@@ -79,7 +132,7 @@ public class window extends JPanel{
 		panel0.add(label0);
 		
 		snipper0 = new JComboBox<String>(CustmerList);
-		snipper0.setPrototypeDisplayValue("                  ");
+		//snipper0.setPrototypeDisplayValue("                  ");
 		panel0.add(snipper0);
 
 		label7 = new JLabel("  Bill num: " + bill_no);
@@ -158,7 +211,7 @@ public class window extends JPanel{
 		label6 = new JLabel("  Paid: ");
 		panel3.add(label6);
 
-		textField3 = new JTextField(4);
+		textField3 = new JTextField("0",4);
 		panel3.add(textField3);
 
 		button2 = new JButton("Done");
@@ -196,7 +249,7 @@ public class window extends JPanel{
  				repaint();
 			}
 		});
-
+		//done button
 		button2.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				panel1.setVisible(false);
@@ -207,12 +260,23 @@ public class window extends JPanel{
 
 				String cust = CustmerList[snipper0.getSelectedIndex()];
 
-				for(int l=0;l<i;l++){
-					String[] ts = {cust,data[l][0],bill_no,date};
-					int[] ti = {Integer.parseInt(data[l][2]),Integer.parseInt(data[l][1])};
+				for(int l=0;l<i;l++) {
+					String[] ts = {cust, data[l][0], bill_no, date};
+					int[] ti = {Integer.parseInt(data[l][2]), Integer.parseInt(data[l][1])};
 
-					db.add_row_in_Billing(ts,ti);
+					db.add_row_in_Billing(ts, ti);
 				}
+				String t = textField3.getText();
+				int paid = 0;
+				System.out.print("t: "+t);
+				paid = Integer.parseInt(t);
+				//System.out.println("Hi");
+				if(sum != paid)
+					db.add_in_BillPaymentPending(cust,bill_no,sum,paid,date);
+
+				try{set_bill_no();}
+				catch (Exception ee){ee.printStackTrace();}
+
 
 				//end new button "Add into database"
 
@@ -231,9 +295,10 @@ public class window extends JPanel{
 						snipper0.requestFocus();
 						textField1.setText("");
 						textField2.setText("");
-						textField3.setText("");
+						textField3.setText("0");
 						panel1.setVisible(true);
 						label4.setText("  Total: " + sum);
+						label7.setText("  Bill num: " + bill_no);
 						button2.setVisible(true);
 						button3.setVisible(false);
 						//data = new String[10][4];
