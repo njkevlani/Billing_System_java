@@ -1,0 +1,19 @@
+STEP 1. setup mysql database:
+	Set username "root" and password "" for database
+		
+	Import database Rasmalai-Billing.sql using:
+		1. Using mysql command line tool or
+		2. Using localhost/phpmyadmin (xampp)
+
+
+
+STEP 2. Install JRE for your system if you don't have.
+
+STEP 3. Put the Rasmalai-Billing directory in your user_home folder. 
+	For Linux systems, this user_home directory is /home/usename/
+	
+STEP 4. Grant execution permission to file Rasmalai-Billing/Rasmalai-Billing.jar.
+
+STEP 5. Configure files in RAsmalai-Billing/Files/ according to your needs.
+
+Ready to run. Double click Rasmalai-Billing.jar

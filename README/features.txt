@@ -1,0 +1,31 @@
+Mainly application consists of 5 tabs, those are:
+	1. Billing
+	2. Watch
+	3. Pending Payment
+	4. Payment &
+	5. Search Bill
+	
+1. Billing
+	
+	while making bill, name of customers and items are being featched from files from a folder. (USER_DIR/Files/)
+	items can be added with price and quantity in bill and at the end we have to add the amount that has been paid by customer (default that paid amount is 0) and after clicking "Done" entries in data base will be done.
+	after making bill, prints can be taken, by "Print" button. New can be initiated using "New Bill" button.
+	Intermediately, bill can be canceled. 
+	
+2. Watch
+	
+	In this tab, all the bills that we have made till date can be seen, last bill at the top.
+	
+3. Pending Payment
+	
+	In this tab, all the payments pending are shown with respective bill number and other details.
+	
+4. Payment
+	
+	At this tab, we can add payment that are pending.
+	As we add payment, it updates the database.
+	If full payment is made, the Pending Payment record is remove.
+	
+5. Search Bill
+
+	In this tab, bills can be search using customer name, date or bill number.

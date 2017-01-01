@@ -1,0 +1,8 @@
+It is a open source billing system developed in Java by Nilesh Kevlani.
+
+GUI is user friendly, data is maintain as a mysql database.
+
+Source code is available in BillingStable2.0(SOURCECODE) (can be opened using IntelliJ Idea) directory.
+.jar file for app is available in Rasmalai-Billing directory.
+
+for setup, see SETUP directory.
